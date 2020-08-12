@@ -1,4 +1,4 @@
-
+# This is the function that adds numbers
 def add_numbers(x, y, z):
     return x + y + z
 
