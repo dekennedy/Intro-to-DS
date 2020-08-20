@@ -1,4 +1,4 @@
-# This is the function that adds numbers
+
 def add_numbers(x, y, z):
     return x + y + z
 
@@ -36,15 +36,14 @@ type('This is a string')
 
 type(None)
 
-type(1)
+ [x**2 for x in range(10)].type
 
-type(1.0)
+type(lambda x: x+1)
 
 type(add_numbers)
 
 
-x = (1, 'a', 2, 'b')
-type(x)
+r.reshape(36)[::7]
 
 x = [1, 'a', 2, 'b']
 type(x)
@@ -93,7 +92,8 @@ lastname = 'Christopher Arthur Hansen Brooks'.split(' ')[-1] # [-1] selects the 
 print(firstname)
 print(lastname)
 
-'Chris' + 2
+'Chris' + str(2)
+
 
 'Chris' + str(2)
 
@@ -105,10 +105,11 @@ x['Kevyn Collins-Thompson'] = None
 x['Kevyn Collins-Thompson']
 
 for name in x:
-    print(x[name])
+    print(x)
 
 for email in x.values():
     print(email)
+   
 
 for name, email in x.items():
     print(name)
@@ -122,12 +123,11 @@ fname
 lname
 
 x = ('Christopher', 'Brooks', 'brooksch@umich.edu')
-fname, lname, email = x
+fname, lname, email
+print(email)
 
-print(x)
 
-
-print('Chris' + 2)
+print('Chris' + str(2))
 
 print('Chris' + str(2))
 
@@ -151,7 +151,13 @@ import csv
 with open('mpg.csv') as csvfile:
     mpg = list(csv.DictReader(csvfile))
     
+
 mpg[:3] # The first three dictionaries in our list.
+
+
+
+
+
 
 len(mpg)
 
@@ -164,7 +170,7 @@ sum(float(d['hwy']) for d in mpg) / len(mpg)
 cylinders = set(d['cyl'] for d in mpg)
 cylinders
 
-CtyMpgByCyl = []
+CtyMpgByCyl = []     #make an empty list    SUMIF and Count IF = average by count
 
 for c in cylinders: # iterate over all the cylinder levels
     summpg = 0
@@ -237,18 +243,30 @@ cheapest
 for item in cheapest:
     print(item)
 
-my_function = lambda a, b, c : a + b
+my_function = lambda a, b, c : a + b +c
 
-my_function(1, 2, 3)
+my_function(1, 2, 7)
 
 my_list = []
-for number in range(0, 1000):
+for number in range(0, 10):
     if number % 2 == 0:
         my_list.append(number)
 my_list
 
-my_list = [number for number in range(0,1000) if number % 2 == 0]
+my_list = [number for number in range(0,10) if number % 2 == 0]
 my_list
+
+lowercase = 'abcdefghijklmnopqrstuvwxyz'
+digits = '0123456789'
+
+correct_answer = [a+b+c+d for a in lowercase for b in lowercase for c in digits for d in digits]
+
+correct_answer[:50] # Display first 50 ids
+
+
+
+
+
 
 import numpy as np
 
@@ -353,7 +371,7 @@ r = np.arange(36)
 r.resize((6, 6))
 r
 
-r[2, 2]
+r[2:4,2:4]
 
 r[3, 3:6]
 
