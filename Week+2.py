@@ -521,7 +521,7 @@ df.head()
 
 
 df['country'] = df.index
-df = df.set_index('Gold')
+df = df.set_index('Silver')
 df.head()
 
 
