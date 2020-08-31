@@ -549,6 +549,7 @@ df['SUMLEV'].unique()
 
 
 df=df[df['SUMLEV'] == 50]
+
 df.head()
 
 
