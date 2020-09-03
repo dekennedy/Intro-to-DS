@@ -521,7 +521,7 @@ df.head()
 
 
 df['country'] = df.index
-df = df.set_index('Gold')
+df = df.set_index('Silver')
 df.head()
 
 
@@ -549,6 +549,7 @@ df['SUMLEV'].unique()
 
 
 df=df[df['SUMLEV'] == 50]
+
 df.head()
 
 
