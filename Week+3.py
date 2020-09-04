@@ -73,6 +73,8 @@ print(student_df.head())
 pd.merge(staff_df, student_df, how='outer', left_index=True, right_index=True)
 
 
+#pd.merge(staff_df, student_df, how='inner', left_index=True, right_index=True)
+
 # In[8]:
 
 
