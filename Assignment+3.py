@@ -58,27 +58,45 @@
 # 
 # *This function should return a DataFrame with 20 columns and 15 entries.*
 
-# In[24]:
+# In[10]:
 
 
 def answer_one():
-    return "ANSWER"
+  
+    import pandas as pd
+    import numpy as np
 
-import pandas as pd
-import numpy as np
+    energy = pd.read_excel('Energy Indicators.xls', usecols = [2,3,4,5], skiprows = 17 , skipfooter= 38)
+    energy.columns = ['Country', 'Energy Supply', 'Energy Supply per Capita', '% Renewable']
+    energy.loc[energy['Energy Supply'] == "...",'Energy Supply'] = np.nan
+    energy.loc[energy['Energy Supply per Capita'] == "...",'Energy Supply per Capita'] = np.nan
+    energy.loc['Energy Supply'] = energy['Energy Supply']*1000000
+    energy['Country'] = energy['Country'].str.replace('\d+', '')
+    energy['Country'] = energy['Country'].str.replace(r"\s+\(.*\)","")
+    newnames = {"Republic of Korea": "South Korea",
+    "United States of America": "United States",
+    "United Kingdom of Great Britain and Northern Ireland": "United Kingdom",
+    "China, Hong Kong Special Administrative Region": "Hong Kong"}
+    energy['Country'] = energy['Country'].replace(newnames, regex=True)
 
-energy = pd.read_excel('Energy Indicators.xls', usecols = [2,3,4,5], skiprows = 17 , skipfooter= 38)
-energy.columns = ['Country', 'Energy Supply', 'Energy Supply per Capita', '% Renewable']
-energy.loc[energy['Energy Supply'] == "...",'Energy Supply'] = np.nan
-energy.loc[energy['Energy Supply per Capita'] == "...",'Energy Supply per Capita'] = np.nan
-energy.loc['Energy Supply'] = energy['Energy Supply']*1000000
+    GDP = pd.read_csv('world_bank.csv', skiprows = 4)
+    newnamesGDP = {"Korea, Rep.": "South Korea", 
+    "Iran, Islamic Rep.": "Iran",
+    "Hong Kong SAR, China": "Hong Kong"}
+    GDP['Country Name'] = GDP['Country Name'].replace(newnamesGDP, regex=True)
+    GDP = GDP[['Country Name', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015'] ]
 
-energy['Country'] = energy['Country'].replace('1', '')
-    
-    
+    ScimEn = pd.read_excel('scimagojr-3.xlsx')
 
-energy.head(12)
 
+    MergeDF = pd.merge(ScimEn[0:15], energy, how = 'inner', left_on = 'Country', right_on='Country')
+
+    Merge2 = pd.merge(MergeDF,GDP, how = 'inner', left_on = 'Country', right_on='Country Name').set_index('Country') 
+    Merge2 = Merge2[['Rank', 'Documents', 'Citable documents', 'Citations', 'Self-citations', 'Citations per document', 'H index', 'Energy Supply', 'Energy Supply per Capita', '% Renewable', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015']]
+
+    return Merge2
+
+answer_one()
 
 
 # ### Question 2 (6.6%)
@@ -86,17 +104,55 @@ energy.head(12)
 # 
 # *This function should return a single number.*
 
-# In[5]:
+# In[11]:
 
 
 get_ipython().run_cell_magic('HTML', '', '<svg width="800" height="300">\n  <circle cx="150" cy="180" r="80" fill-opacity="0.2" stroke="black" stroke-width="2" fill="blue" />\n  <circle cx="200" cy="100" r="80" fill-opacity="0.2" stroke="black" stroke-width="2" fill="red" />\n  <circle cx="100" cy="100" r="80" fill-opacity="0.2" stroke="black" stroke-width="2" fill="green" />\n  <line x1="150" y1="125" x2="300" y2="150" stroke="black" stroke-width="2" fill="black" stroke-dasharray="5,3"/>\n  <text  x="300" y="165" font-family="Verdana" font-size="35">Everything but this!</text>\n</svg>')
 
 
-# In[ ]:
+# In[18]:
 
 
 def answer_two():
-    return "ANSWER"
+    
+    import pandas as pd
+    import numpy as np
+    
+    energy = pd.read_excel('Energy Indicators.xls', usecols = [2,3,4,5], skiprows = 17 , skipfooter= 38)
+    energy.columns = ['Country', 'Energy Supply', 'Energy Supply per Capita', '% Renewable']
+    energy.loc[energy['Energy Supply'] == "...",'Energy Supply'] = np.nan
+    energy.loc[energy['Energy Supply per Capita'] == "...",'Energy Supply per Capita'] = np.nan
+    energy.loc['Energy Supply'] = energy['Energy Supply']*1000000
+    energy['Country'] = energy['Country'].str.replace('\d+', '')
+    energy['Country'] = energy['Country'].str.replace(r"\s+\(.*\)","")
+    newnames = {"Republic of Korea": "South Korea",
+    "United States of America": "United States",
+    "United Kingdom of Great Britain and Northern Ireland": "United Kingdom",
+    "China, Hong Kong Special Administrative Region": "Hong Kong"}
+    energy['Country'] = energy['Country'].replace(newnames, regex=True)
+    
+    GDP = pd.read_csv('world_bank.csv', skiprows = 4)
+    newnamesGDP = {"Korea, Rep.": "South Korea", 
+    "Iran, Islamic Rep.": "Iran",
+    "Hong Kong SAR, China": "Hong Kong"}
+    GDP['Country Name'] = GDP['Country Name'].replace(newnamesGDP, regex=True)
+    GDP = GDP[['Country Name', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015'] ]
+
+    ScimEn = pd.read_excel('scimagojr-3.xlsx')
+
+    MergeDF = pd.merge(ScimEn[0:15], energy, how = 'inner', left_on = 'Country', right_on='Country')
+    Merge2 = pd.merge(MergeDF,GDP, how = 'inner', left_on = 'Country', right_on='Country Name').set_index('Country') 
+    Merge2 = Merge2[['Rank', 'Documents', 'Citable documents', 'Citations', 'Self-citations', 'Citations per document', 'H index', 'Energy Supply', 'Energy Supply per Capita', '% Renewable', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015']]
+    
+         
+    ScimEn2 = pd.read_excel('scimagojr-3.xlsx')
+    newMerge = pd.merge(ScimEn2, energy, how = 'inner', left_on = 'Country', right_on='Country')
+    newMerge2 = pd.merge(newMerge,GDP, how = 'inner', left_on = 'Country', right_on='Country Name').set_index('Country') 
+    newMerge2 = newMerge2[['Rank', 'Documents', 'Citable documents', 'Citations', 'Self-citations', 'Citations per document', 'H index', 'Energy Supply', 'Energy Supply per Capita', '% Renewable', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015']]
+    return len(newMerge2)-len(Merge2)
+
+answer_two()
+
 
 
 # ## Answer the following questions in the context of only the top 15 countries by Scimagojr Rank (aka the DataFrame returned by `answer_one()`)
@@ -106,12 +162,20 @@ def answer_two():
 # 
 # *This function should return a Series named `avgGDP` with 15 countries and their average GDP sorted in descending order.*
 
-# In[ ]:
+# In[56]:
 
 
 def answer_three():
+
     Top15 = answer_one()
-    return "ANSWER"
+
+    gdp = Top15[['2006','2007','2008','2009','2010','2011','2012','2013','2014','2015']]
+
+    avgGDP = gdp.mean(axis=1)
+    avgGDP = avgGDP.sort_values(ascending=False)
+    return avgGDP
+
+answer_three()
 
 
 # ### Question 4 (6.6%)
@@ -119,12 +183,22 @@ def answer_three():
 # 
 # *This function should return a single number.*
 
-# In[ ]:
+# In[84]:
 
 
 def answer_four():
     Top15 = answer_one()
-    return "ANSWER"
+
+
+    Country6 = answer_three().index[5]
+    UK2015 = Top15.loc[Country6]['2015'] 
+    UK2006 = Top15.loc[Country6]['2006'] 
+    diff = UK2015 - UK2006
+
+    return diff
+
+answer_four()
+
 
 
 # ### Question 5 (6.6%)
@@ -132,12 +206,16 @@ def answer_four():
 # 
 # *This function should return a single number.*
 
-# In[ ]:
+# In[92]:
 
 
 def answer_five():
+    
     Top15 = answer_one()
-    return "ANSWER"
+    ave_ESPC = Top15['Energy Supply per Capita'].mean()
+    return ave_ESPC
+
+answer_five()
 
 
 # ### Question 6 (6.6%)
@@ -145,12 +223,20 @@ def answer_five():
 # 
 # *This function should return a tuple with the name of the country and the percentage.*
 
-# In[ ]:
+# In[102]:
 
 
 def answer_six():
     Top15 = answer_one()
-    return "ANSWER"
+
+    maxCountry = Top15['% Renewable'].argmax()
+    Counrtyperc = Top15.loc[maxCountry]['% Renewable']
+    i = (maxCountry, Counrtyperc)
+
+    return i
+
+answer_six()
+
 
 
 # ### Question 7 (6.6%)
@@ -159,12 +245,24 @@ def answer_six():
 # 
 # *This function should return a tuple with the name of the country and the ratio.*
 
-# In[ ]:
+# In[111]:
 
 
 def answer_seven():
     Top15 = answer_one()
-    return "ANSWER"
+
+    Top15['Self-Citations to Total Citations'] = Top15['Self-citations'] / Top15['Citations']
+
+    MaxCit = Top15['Self-Citations to Total Citations'].argmax()
+    CounrtyValue = Top15.loc[MaxCit]['Self-Citations to Total Citations']
+
+    j = (MaxCit , CounrtyValue)
+
+    return j
+
+answer_seven()
+
+
 
 
 # ### Question 8 (6.6%)
@@ -174,12 +272,20 @@ def answer_seven():
 # 
 # *This function should return a single string value.*
 
-# In[ ]:
+# In[112]:
 
 
 def answer_eight():
     Top15 = answer_one()
     return "ANSWER"
+
+
+Top15
+
+
+
+
+
 
 
 # ### Question 9 (6.6%)
