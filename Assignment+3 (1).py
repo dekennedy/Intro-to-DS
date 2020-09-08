@@ -162,7 +162,7 @@ answer_two()
 # 
 # *This function should return a Series named `avgGDP` with 15 countries and their average GDP sorted in descending order.*
 
-# In[60]:
+## In[60]:
 
 
 def answer_three():
@@ -202,9 +202,9 @@ answer_four()
 
 
 # ### Question 5 (6.6%)
-# What is the mean `Energy Supply per Capita`?
-# 
-# *This function should return a single number.*
+## What is the mean `Energy Supply per Capita`?
+## 
+## *This function should return a single number.*
 
 # In[62]:
 
@@ -241,9 +241,9 @@ answer_six()
 
 # ### Question 7 (6.6%)
 # Create a new column that is the ratio of Self-Citations to Total Citations. 
-# What is the maximum value for this new column, and what country has the highest ratio?
-# 
-# *This function should return a tuple with the name of the country and the ratio.*
+## What is the maximum value for this new column, and what country has the highest ratio?
+## 
+# # This function should return a tuple with the name of the country and the ratio.*
 
 # In[64]:
 
