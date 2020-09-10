@@ -58,7 +58,7 @@
 # 
 # *This function should return a DataFrame with 20 columns and 15 entries.*
 
-# In[10]:
+# In[1]:
 
 
 def answer_one():
@@ -70,13 +70,15 @@ def answer_one():
     energy.columns = ['Country', 'Energy Supply', 'Energy Supply per Capita', '% Renewable']
     energy.loc[energy['Energy Supply'] == "...",'Energy Supply'] = np.nan
     energy.loc[energy['Energy Supply per Capita'] == "...",'Energy Supply per Capita'] = np.nan
-    energy.loc['Energy Supply'] = energy['Energy Supply']*1000000
+    energy['Energy Supply'] = energy['Energy Supply']*1000000
     energy['Country'] = energy['Country'].str.replace('\d+', '')
     energy['Country'] = energy['Country'].str.replace(r"\s+\(.*\)","")
+   
     newnames = {"Republic of Korea": "South Korea",
     "United States of America": "United States",
     "United Kingdom of Great Britain and Northern Ireland": "United Kingdom",
     "China, Hong Kong Special Administrative Region": "Hong Kong"}
+    
     energy['Country'] = energy['Country'].replace(newnames, regex=True)
 
     GDP = pd.read_csv('world_bank.csv', skiprows = 4)
@@ -104,13 +106,13 @@ answer_one()
 # 
 # *This function should return a single number.*
 
-# In[11]:
+# In[2]:
 
 
 get_ipython().run_cell_magic('HTML', '', '<svg width="800" height="300">\n  <circle cx="150" cy="180" r="80" fill-opacity="0.2" stroke="black" stroke-width="2" fill="blue" />\n  <circle cx="200" cy="100" r="80" fill-opacity="0.2" stroke="black" stroke-width="2" fill="red" />\n  <circle cx="100" cy="100" r="80" fill-opacity="0.2" stroke="black" stroke-width="2" fill="green" />\n  <line x1="150" y1="125" x2="300" y2="150" stroke="black" stroke-width="2" fill="black" stroke-dasharray="5,3"/>\n  <text  x="300" y="165" font-family="Verdana" font-size="35">Everything but this!</text>\n</svg>')
 
 
-# In[18]:
+# In[43]:
 
 
 def answer_two():
@@ -162,15 +164,16 @@ answer_two()
 # 
 # *This function should return a Series named `avgGDP` with 15 countries and their average GDP sorted in descending order.*
 
-# In[56]:
+# In[20]:
 
 
 def answer_three():
 
     Top15 = answer_one()
 
-    gdp = Top15[['2006','2007','2008','2009','2010','2011','2012','2013','2014','2015']]
-
+    #gdp = Top15[['2006','2007','2008','2009','2010','2011','2012','2013','2014','2015']]
+    gdp = Top15.loc[:,'2006':'2015']
+    
     avgGDP = gdp.mean(axis=1)
     avgGDP = avgGDP.sort_values(ascending=False)
     return avgGDP
@@ -183,7 +186,7 @@ answer_three()
 # 
 # *This function should return a single number.*
 
-# In[84]:
+# In[29]:
 
 
 def answer_four():
@@ -201,19 +204,22 @@ answer_four()
 
 
 
+
 # ### Question 5 (6.6%)
 # What is the mean `Energy Supply per Capita`?
 # 
 # *This function should return a single number.*
 
-# In[92]:
+# In[42]:
 
 
 def answer_five():
     
+    import numpy as np
+    
     Top15 = answer_one()
     ave_ESPC = Top15['Energy Supply per Capita'].mean()
-    return ave_ESPC
+    return np.float(ave_ESPC)
 
 answer_five()
 
@@ -223,7 +229,7 @@ answer_five()
 # 
 # *This function should return a tuple with the name of the country and the percentage.*
 
-# In[102]:
+# In[7]:
 
 
 def answer_six():
@@ -245,7 +251,7 @@ answer_six()
 # 
 # *This function should return a tuple with the name of the country and the ratio.*
 
-# In[111]:
+# In[8]:
 
 
 def answer_seven():
@@ -272,19 +278,18 @@ answer_seven()
 # 
 # *This function should return a single string value.*
 
-# In[112]:
+# In[30]:
 
 
 def answer_eight():
     Top15 = answer_one()
-    return "ANSWER"
+
+    Top15['Pop_Estimate'] = Top15['Energy Supply'] / (Top15['Energy Supply per Capita'])
+    popsort = Top15['Energy Supply'] / (Top15['Energy Supply per Capita'])
+    return popsort.sort_values(ascending = False).index[2]
 
 
-Top15
-
-
-
-
+answer_eight()
 
 
 
@@ -296,15 +301,30 @@ Top15
 # 
 # *(Optional: Use the built-in function `plot9()` to visualize the relationship between Energy Supply per Capita vs. Citable docs per Capita)*
 
-# In[ ]:
+# In[10]:
 
 
 def answer_nine():
+    import numpy as np
     Top15 = answer_one()
-    return "ANSWER"
+    
+    Top15['Pop_Estimate'] = Top15['Energy Supply'] / (Top15['Energy Supply per Capita'])
+
+    Top15['citable per person'] = Top15['Citable documents'] / Top15['Pop_Estimate']
+    
+    Top15['citable per person'] = np.float64(Top15['citable per person'])
+    Top15['Energy Supply per Capita'] = np.float64(Top15['Energy Supply per Capita'])
+    
+    cor = Top15['citable per person'].corr(Top15['Energy Supply per Capita'])
+    
+    
+
+    return cor
+
+answer_nine()
 
 
-# In[ ]:
+# In[34]:
 
 
 def plot9():
@@ -312,15 +332,15 @@ def plot9():
     get_ipython().magic('matplotlib inline')
     
     Top15 = answer_one()
-    Top15['PopEst'] = Top15['Energy Supply'] / Top15['Energy Supply per Capita']
-    Top15['Citable docs per Capita'] = Top15['Citable documents'] / Top15['PopEst']
-    Top15.plot(x='Citable docs per Capita', y='Energy Supply per Capita', kind='scatter', xlim=[0, 0.0006])
+    Top15['Pop_Estimate'] = Top15['Energy Supply'] / Top15['Energy Supply per Capita']
+    Top15['citable per person'] = Top15['Citable documents'] / Top15['Pop_Estimate']
+    Top15.plot(x='citable per person', y='Energy Supply per Capita', kind='scatter', xlim=[0, 0.0006])
 
 
-# In[ ]:
+# In[35]:
 
 
-#plot9() # Be sure to comment out plot9() before submitting the assignment!
+# plot9() # Be sure to comment out plot9() before submitting the assignment!
 
 
 # ### Question 10 (6.6%)
@@ -328,12 +348,26 @@ def plot9():
 # 
 # *This function should return a series named `HighRenew` whose index is the country name sorted in ascending order of rank.*
 
-# In[ ]:
+# In[13]:
 
 
 def answer_ten():
+
     Top15 = answer_one()
-    return "ANSWER"
+    renewmed = Top15['% Renewable']
+    M = renewmed.median()
+    HighRenew = renewmed
+
+    for i in range(len(HighRenew)):
+        if HighRenew[i] >= M:
+                HighRenew[i] = 1
+        else: 
+                HighRenew[i] = 0
+    return HighRenew.sort_values(ascending=False)
+
+
+answer_ten()
+
 
 
 # ### Question 11 (6.6%)
@@ -359,12 +393,42 @@ def answer_ten():
 # 
 # *This function should return a DataFrame with index named Continent `['Asia', 'Australia', 'Europe', 'North America', 'South America']` and columns `['size', 'sum', 'mean', 'std']`*
 
-# In[ ]:
+# In[14]:
 
 
 def answer_eleven():
     Top15 = answer_one()
-    return "ANSWER"
+    
+    Top15 = answer_one()
+    Top15['Continent'] = Top15.index
+    Top15['Country'] = Top15['Continent']
+    ContinentDict  = {'China':'Asia', 
+                      'United States':'North America', 
+                      'Japan':'Asia', 
+                      'United Kingdom':'Europe', 
+                      'Russian Federation':'Europe', 
+                      'Canada':'North America', 
+                      'Germany':'Europe', 
+                      'India':'Asia',
+                      'France':'Europe', 
+                      'South Korea':'Asia', 
+                      'Italy':'Europe', 
+                      'Spain':'Europe', 
+                      'Iran':'Asia',
+                      'Australia':'Australia', 
+                      'Brazil':'South America'}
+    Top15['Continent'] = Top15['Continent'].replace(ContinentDict, regex=True)
+    Top15['Pop_Estimate'] = Top15['Energy Supply'] / (Top15['Energy Supply per Capita'])
+    Top15['Pop_Estimate'] = Top15['Pop_Estimate'].astype(float)
+    Top15 = Top15.groupby('Continent')['Pop_Estimate'].agg(['size','sum','mean','std'])
+
+
+    return Top15
+
+answer_eleven()
+
+
+
 
 
 # ### Question 12 (6.6%)
@@ -372,12 +436,47 @@ def answer_eleven():
 # 
 # *This function should return a __Series__ with a MultiIndex of `Continent`, then the bins for `% Renewable`. Do not include groups with no countries.*
 
-# In[ ]:
+# In[41]:
 
 
 def answer_twelve():
+
+    import pandas as pd
     Top15 = answer_one()
-    return "ANSWER"
+    Top15['Continent'] = Top15.index
+    Top15['Country'] = Top15['Continent']
+    ContinentDict  = {'China':'Asia', 
+                          'United States':'North America', 
+                          'Japan':'Asia', 
+                          'United Kingdom':'Europe', 
+                          'Russian Federation':'Europe', 
+                          'Canada':'North America', 
+                          'Germany':'Europe', 
+                          'India':'Asia',
+                          'France':'Europe', 
+                          'South Korea':'Asia', 
+                          'Italy':'Europe', 
+                          'Spain':'Europe', 
+                          'Iran':'Asia',
+                          'Australia':'Australia', 
+                          'Brazil':'South America'}
+    Top15['Continent'] = Top15['Continent'].replace(ContinentDict, regex=True)
+
+
+
+    Top15['Bins'] = pd.cut(Top15['% Renewable'],5)
+    return Top15.groupby(['Continent','Bins']).size()
+
+
+answer_twelve()
+
+# Top15 = answer_one()
+# m = Top15['% Renewable'].min()
+# M = Top15['% Renewable'].max()
+
+# print(m ,M)
+
+
 
 
 # ### Question 13 (6.6%)
@@ -387,37 +486,46 @@ def answer_twelve():
 # 
 # *This function should return a Series `PopEst` whose index is the country name and whose values are the population estimate string.*
 
-# In[ ]:
+# In[16]:
 
 
 def answer_thirteen():
-    Top15 = answer_one()
-    return "ANSWER"
+
+    Top15 = answer_one()  
+    Top15['PopEst'] = Top15['Energy Supply'] / (Top15['Energy Supply per Capita'])
+    return Top15['PopEst'].apply(lambda x: '{0:,}'.format(x)).astype(str)
+
+
+answer_thirteen()
+
+
 
 
 # ### Optional
 # 
 # Use the built in function `plot_optional()` to see an example visualization.
 
-# In[ ]:
+# In[17]:
 
 
-def plot_optional():
-    import matplotlib as plt
-    get_ipython().magic('matplotlib inline')
-    Top15 = answer_one()
-    ax = Top15.plot(x='Rank', y='% Renewable', kind='scatter', 
-                    c=['#e41a1c','#377eb8','#e41a1c','#4daf4a','#4daf4a','#377eb8','#4daf4a','#e41a1c',
-                       '#4daf4a','#e41a1c','#4daf4a','#4daf4a','#e41a1c','#dede00','#ff7f00'], 
-                    xticks=range(1,16), s=6*Top15['2014']/10**10, alpha=.75, figsize=[16,6]);
+# def plot_optional():
+#     import matplotlib as plt
+#     %matplotlib inline
+#     Top15 = answer_one()
+#     ax = Top15.plot(x='Rank', y='% Renewable', kind='scatter', 
+#                     c=['#e41a1c','#377eb8','#e41a1c','#4daf4a','#4daf4a','#377eb8','#4daf4a','#e41a1c',
+#                        '#4daf4a','#e41a1c','#4daf4a','#4daf4a','#e41a1c','#dede00','#ff7f00'], 
+#                     xticks=range(1,16), s=6*Top15['2014']/10**10, alpha=.75, figsize=[16,6]);
 
-    for i, txt in enumerate(Top15.index):
-        ax.annotate(txt, [Top15['Rank'][i], Top15['% Renewable'][i]], ha='center')
+#     for i, txt in enumerate(Top15.index):
+#         ax.annotate(txt, [Top15['Rank'][i], Top15['% Renewable'][i]], ha='center')
 
-    print("This is an example of a visualization that can be created to help understand the data. This is a bubble chart showing % Renewable vs. Rank. The size of the bubble corresponds to the countries' 2014 GDP, and the color corresponds to the continent.")
+#     print("This is an example of a visualization that can be created to help understand the data. \
+# This is a bubble chart showing % Renewable vs. Rank. The size of the bubble corresponds to the countries' \
+# 2014 GDP, and the color corresponds to the continent.")
 
 
-# In[ ]:
+# In[18]:
 
 
 #plot_optional() # Be sure to comment out plot_optional() before submitting the assignment!
