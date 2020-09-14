@@ -22,6 +22,7 @@ import numpy as np
 np.random.binomial(1, 0.5)
 
 
+
 # In[ ]:
 
 
@@ -158,7 +159,7 @@ late.mean()
 
 
 # In[ ]:
-
+##Check for Assignment 4
 
 from scipy import stats
 get_ipython().magic('pinfo stats.ttest_ind')
